@@ -1,23 +1,31 @@
 import { useEffect, useState } from "react";
+import axios from "axios";
+import ModalWrapper from "../ModalWrapper/ModalWrapper.jsx";
+import DeleteContent from "../DeleteContent/DeleteContent.jsx";
 
-export default function table () {
-    const [tableItems, setTableItems] = useState([]);
+export default function table() {
+  const [tableItems, setTableItems] = useState([]);
+  const [open, setOpen] = useState(false);
+  const [itemToDelete, setItemToDelete] = useState({});
 
-    async function fetchData() {
-        const response = await fetch("http://localhost:3001/myproducts");
-        const data = await response.json();
+  async function fetchData() {
+    const response = await axios.get("http://localhost:3001/meusfuncionarios");
+    const data = await response.data;
 
-        setTableItems(data);
-    }
+    setTableItems(data);
+  }
 
-    
-    useEffect(() => {
-        fetchData();
-    }, []);
+  useEffect(() => {
+    fetchData();
+  }, []);
 
-    console.log(tableItems);
-  
-   
+  console.log(tableItems);
+
+  function handleOpenModalDelete(item) {
+    setItemToDelete(item);
+    setOpen(true);
+  }
+
   return (
     <div className="max-w-screen-xl mx-auto px-4 md:px-8">
       <div className="items-start justify-between md:flex">
@@ -50,7 +58,7 @@ export default function table () {
             </tr>
           </thead>
           <tbody className="text-gray-600 divide-y">
-            {tableItems.map((item, idx) => (
+            {tableItems?.map((item, idx) => (
               <tr key={idx}>
                 <td className="px-6 py-4 whitespace-nowrap">{item.name}</td>
                 <td className="px-6 py-4 whitespace-nowrap">{item.email}</td>
@@ -64,6 +72,7 @@ export default function table () {
                     Editar
                   </a>
                   <button
+                    onClick={() => handleOpenModalDelete(item)}
                     href="javascript:void()"
                     className="py-2 leading-none px-3 font-medium text-red-600 hover:text-red-500 duration-150 hover:bg-gray-50 rounded-lg"
                   >
@@ -74,7 +83,10 @@ export default function table () {
             ))}
           </tbody>
         </table>
+        <ModalWrapper open={open} setOpen={setOpen} item={itemToDelete}>
+          <DeleteContent itemToDelete={itemToDelete} />
+        </ModalWrapper>
       </div>
     </div>
   );
-};
+}
