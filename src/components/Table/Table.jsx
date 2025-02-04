@@ -3,7 +3,7 @@ import axios from "axios";
 import ModalWrapper from "../ModalWrapper/ModalWrapper.jsx";
 import DeleteContent from "../DeleteContent/DeleteContent.jsx";
 
-export default function table() {
+export default function Table() {
   const [tableItems, setTableItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({});
@@ -83,7 +83,7 @@ export default function table() {
             ))}
           </tbody>
         </table>
-        <ModalWrapper open={open} setOpen={setOpen} item={itemToDelete}>
+        <ModalWrapper open={open} setOpen={setOpen} itemToDelete={itemToDelete}>
           <DeleteContent itemToDelete={itemToDelete} />
         </ModalWrapper>
       </div>
