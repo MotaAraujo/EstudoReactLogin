@@ -2,15 +2,18 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import ModalWrapper from "../ModalWrapper/ModalWrapper.jsx";
 import DeleteContent from "../DeleteContent/DeleteContent.jsx";
+import SlideOverWrapper from "../SlideOverWrapper/SlideOverWrapper.jsx";
+import ContentAdd from "../ContentAdd/ContentAdd.jsx";
 
 export default function Table() {
   const [tableItems, setTableItems] = useState([]);
   const [open, setOpen] = useState(false);
   const [itemToDelete, setItemToDelete] = useState({});
+  const [modalAddIsVisible, setModalAddIsVisible] = useState(false);
 
   async function fetchData() {
     const response = await axios.get("http://localhost:3001/meusfuncionarios");
-    const data = await response.data;
+    const data = response.data;
 
     setTableItems(data);
   }
@@ -19,11 +22,13 @@ export default function Table() {
     fetchData();
   }, []);
 
-  console.log(tableItems);
-
   function handleOpenModalDelete(item) {
     setItemToDelete(item);
     setOpen(true);
+  }
+
+  function handleOpenSlideOverAdd() {
+    setModalAddIsVisible(true);
   }
 
   return (
@@ -34,16 +39,18 @@ export default function Table() {
             Cadastro de Funcionários
           </h3>
           <p className="text-gray-600 mt-2">
-            Seção de cadastro de funcionários.
+            Seção de cadastros de funcionários.
           </p>
         </div>
         <div className="mt-3 md:mt-0">
-          <a
+          <button
+            type="button"
+            onClick={handleOpenSlideOverAdd}
             href="javascript:void(0)"
             className="inline-block px-4 py-2 text-white duration-150 font-medium bg-indigo-600 rounded-lg hover:bg-indigo-500 active:bg-indigo-700 md:text-sm"
           >
             Adicionar Funcionário
-          </a>
+          </button>
         </div>
       </div>
       <div className="mt-12 shadow-sm border rounded-lg overflow-x-auto">
@@ -86,6 +93,13 @@ export default function Table() {
         <ModalWrapper open={open} setOpen={setOpen} itemToDelete={itemToDelete}>
           <DeleteContent itemToDelete={itemToDelete} />
         </ModalWrapper>
+
+        <SlideOverWrapper
+          open={modalAddIsVisible}
+          setOpen={setModalAddIsVisible}
+        >
+          <ContentAdd setModalAddIsVisible={setModalAddIsVisible} />
+        </SlideOverWrapper>
       </div>
     </div>
   );
